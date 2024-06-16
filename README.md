@@ -34,7 +34,7 @@ Check out this quick demo of TargetTrackr:
 Clone the repository from GitHub:
 
 ```bash
-git clone https://github.com/your-username/targettrackr.git
+git clone https://github.com/bananaback/targettrackr.git
 cd targettrackr
 ```
 
