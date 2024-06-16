@@ -1,0 +1,449 @@
+/* Reset default browser styles */
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    background-color: transparent;
+}
+
+html {
+    font-size: 16px;
+}
+
+body {
+    font-family: 'Helvetica Neue', Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #ffffff;
+    color: #333;
+    padding: 20px;
+}
+
+/* Link Styles */
+a {
+    color: #3498db;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+a:hover {
+    color: #2980b9;
+}
+
+/* Headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p {
+    font-weight: 600;
+    margin-bottom: 1rem;
+    color: #2c3e50;
+}
+
+h1 {
+    font-size: 2.5rem;
+}
+
+h2 {
+    font-size: 2rem;
+}
+
+h3 {
+    font-size: 1.75rem;
+}
+
+h4 {
+    font-size: 1.5rem;
+}
+
+h5 {
+    font-size: 1.25rem;
+}
+
+h6 {
+    font-size: 1rem;
+}
+
+/* Paragraphs */
+p {
+    margin-bottom: 1rem;
+}
+
+/* Lists */
+ul,
+ol {
+    margin: 1rem 0;
+    padding-left: 1.5rem;
+}
+
+li {
+    margin-bottom: 0.5rem;
+}
+
+/* Form Elements */
+input,
+select,
+textarea,
+button {
+    font-family: inherit;
+    font-size: 1rem;
+}
+
+input,
+select,
+textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 1rem;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #fff;
+    transition: border-color 0.3s;
+}
+
+input:focus,
+select:focus,
+textarea:focus {
+    border-color: #3498db;
+    outline: none;
+}
+
+button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    background-color: #3498db;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+/* Labels */
+label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+/* Tables */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+}
+
+th,
+td {
+    padding: 12px;
+    border: 1px solid #ddd;
+    text-align: left;
+}
+
+th {
+    background-color: #f4f4f4;
+    font-weight: 600;
+}
+
+/* Button Variants */
+.btn-primary {
+    background-color: #3498db;
+    color: #fff;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+}
+
+.btn-secondary {
+    background-color: #2ecc71;
+    color: #fff;
+}
+
+.btn-secondary:hover {
+    background-color: #27ae60;
+}
+
+.btn-danger {
+    background-color: #e74c3c;
+    color: #fff;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
+}
+
+/* Cards */
+.card {
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 20px;
+    transition: all 1s ease;
+    box-shadow: 8px 8px 16px rgba(0, 0, 0, 0.2);
+
+}
+
+.card:hover {
+    box-shadow: 16px 16px 16px rgba(0, 0, 0, 0.2);
+    transition: all 1s ease;
+}
+
+.card-header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    font-size: 1.25rem;
+    font-weight: 600;
+    background-color: #27ae60;
+    color: #fff;
+    padding: 10px;
+    transition: all 1s ease;
+    margin-bottom: 1rem;
+}
+
+.card-header.expand {
+    margin-bottom: 0;
+}
+
+.card-header img,
+.card-header .unmark-btn {
+    width: 0;
+    height: 0;
+    opacity: 0;
+    transition: all 1s ease;
+}
+
+.card-header.expand img,
+.card-header.expand .unmark-btn {
+    display: flex;
+    width: 100px;
+    height: 100px;
+    opacity: 1;
+}
+
+.unmark-btn {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.unmark-btn .colorfill {
+    display: none;
+    position: absolute;
+    z-index: 2;
+    background-color: rgba(252, 0, 0, 0.5);
+    opacity: 0;
+    width: 100px;
+    height: 100px;
+    border-radius: 50px;
+    transition: opacity 1s ease, color 1s ease, transform .5s ease;
+}
+
+.card-header.expand .colorfill {
+    display: block;
+}
+
+.unmark-btn .colorfill:hover {
+    display: block;
+    position: absolute;
+    z-index: 2;
+    background-color: rgba(223, 64, 64, 0.5);
+    opacity: 1;
+    width: 100px;
+    height: 100px;
+    border-radius: 50px;
+}
+
+.card-body {
+    font-size: 1rem;
+}
+
+
+/* Targets Container */
+.targets-container {
+    width: 100%;
+    height: 450px;
+    overflow-x: scroll;
+    gap: 10px;
+    padding: 10px;
+    background-color: rgb(27, 24, 24);
+    scrollbar-width: thin;
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+}
+
+.target {
+    min-width: 448px;
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    margin: 5px;
+    height: auto;
+    padding: 10px;
+    transition: all 1s linear;
+    position: relative;
+    cursor: pointer;
+}
+
+.target-overview {
+    flex: 0 0 auto;
+    min-width: 400px;
+    margin: 5px;
+    padding: 0;
+    border: 0;
+    color: #ffffff;
+    text-align: center;
+    transition: max-height 1s ease, opacity 1s ease, visibility 1s;
+    max-height: 0;
+    opacity: 0;
+    visibility: hidden;
+    overflow: hidden;
+    position: absolute;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 30px;
+    background-color: #ddd;
+    border-radius: 5px;
+    overflow: hidden;
+    /* Hide overflowing progress */
+}
+
+.progress {
+    height: 100%;
+    background-color: #3498db;
+    width: 50%;
+    /* Initial width */
+    transition: width 0.3s ease;
+    /* Smooth transition */
+}
+
+.buttons-container {
+    margin-top: 16px;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+.target-update-form {
+    min-width: 400px;
+    max-height: 0;
+    opacity: 0;
+    visibility: hidden;
+    overflow: hidden;
+    transition: all 1s ease;
+    position: absolute;
+    padding: 0;
+    border: 0;
+}
+
+
+.target-overview.active {
+    max-height: 1000px;
+    /* Adjust this value according to your content size */
+    opacity: 1;
+    visibility: visible;
+    padding: 10px;
+
+}
+
+.target-update-form.active {
+    max-height: 1000px;
+    /* Adjust this value according to your content size */
+    opacity: 1;
+    visibility: visible;
+    padding: 10px;
+}
+
+.card.expand.target-overview .card-header {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2em;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2), 0 6px 20px rgba(0, 0, 0, 0.2);
+    /* Adjust the shadow for the expanded state */
+}
+
+.card.expand .card-body,
+.card.expand .buttons-container {
+    display: none;
+}
+
+/* Context Menu */
+.context-menu {
+    display: none;
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+}
+
+.context-menu ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.context-menu li {
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.context-menu li:hover {
+    background-color: #f0f0f0;
+}
+
+.add-target-btn {
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 0px dashed white;
+    transition: opacity 1s ease, border-color 1s ease;
+}
+
+.add-target-btn:hover {
+    width: 100%;
+    opacity: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 8px dashed white;
+}
+
+.placeholder {
+    background-color: rgba(0, 0, 0, 0.1);
+    /* Light gray background */
+    border: 2px dashed #3498db;
+    /* Dashed border */
+    box-sizing: border-box;
+    /* Ensure border doesn't add to the width/height */
+    transition: all 0.3s ease;
+    /* Smooth transition for visual effect */
+    margin: 5px;
+    height: 215px;
+    /* Match the height of .target */
+    width: 460px;
+    /* Match the width of .target */
+}
+
+.deleting {
+    pointer-events: none;
+}
