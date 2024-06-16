@@ -1,4 +1,14 @@
 {
+  "name": "targettrackr",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "npx webpack serve"
+  },
+  "dependencies": {
+    "webpack": "^5.0.0",
+    "webpack-cli": "^4.0.0",
+    "webpack-dev-server": "^4.0.0"
+  },
   "devDependencies": {
     "css-loader": "^7.1.2",
     "file-loader": "^6.2.0",
