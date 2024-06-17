@@ -2,7 +2,7 @@
 let targetRootArray = [];
 let targetIdCounter = 0;
 let navigationStack = [];
-
+let globalPercent = 0;
 // function to add new element before or after a target specified by id, the current root can be found from navigation stack
 function addTarget(idPosition, direction, targetToAdd) {
     let currentTargetRootArray = null;
@@ -68,6 +68,26 @@ function findPositionInCurrentRootFromId(targetId) {
     return res;
 }
 
+function getProgressOfTargetInCurrentRootFromId(targetId) {
+    let currentTargetRootArray = null;
+
+    if (navigationStack.length === 0) {
+        currentTargetRootArray = targetRootArray;
+    } else {
+        currentTargetRootArray = findRootArrayById(navigationStack[navigationStack.length - 1], targetRootArray);
+    }
+
+    if (currentTargetRootArray == null) {
+        throw new Error('Cannot find target root with specified id: ' + targetId + '.');
+    }
+
+    const expectedTarget = currentTargetRootArray.find(x => x.id == targetId);
+    if (expectedTarget === undefined) {
+        throw new Error('Cannot find target with specified id: ' + targetId + '.');
+    }
+    return expectedTarget.percent;
+}
+
 // Function to update an existing target
 function updateTarget(title, description, isDone, targetId) {
     let currentTargetRootArray = null;
@@ -93,6 +113,20 @@ function updateTarget(title, description, isDone, targetId) {
     if (isDone != null) {
         target.isDone = isDone;
     }
+
+    if (target.subTargets.length === 0) {
+        target.percent = 0;
+    } else {
+        let doneTargetCount = 0;
+        for (subT of target.subTargets) {
+            if (subT.isDone === true) {
+                doneTargetCount++;
+            }
+        }
+        target.percent = Math.floor(doneTargetCount / target.subTargets.length * 100);
+    }
+
+    updateParentTargetProgress();
 }
 
 // Function to delete an existing target
@@ -117,15 +151,6 @@ function deleteTarget(id) {
     currentTargetRootArray.splice(index, 1);
 }
 
-/*
-addTarget(0, 'right', createTarget());
-navigationStack.push(0);
-addTarget(0, 'right', createTarget());
-addTarget(0, 'right', createTarget());
-
-updateTarget("heheboi", "okay", true, 1);
-*/
-
 // factory to create target object
 function createTarget() {
     return {
@@ -134,6 +159,8 @@ function createTarget() {
         description: 'Description of the new target ' + (targetIdCounter - 1),
         percent: 0,
         isDone: false,
+        createdDate: Date.now(),
+        finishedDate: null,
         subTargets: []
     };
 }
@@ -195,6 +222,128 @@ function rearrangeTargets(idList) {
 }
 
 
+// function to mark target as done (I'm assume that it is target in current root to avoid accidentially mark a target as done at another depth level)
+// with constraint that all it sub targets must be marked as done first
+// if success return 1, otherwise return 0
+function markTargetAsDone(targetId) {
+    // check for existence of target with that id
+    let currentTargetRootArray = null;
+
+    if (navigationStack.length === 0) {
+        currentTargetRootArray = targetRootArray;
+    } else {
+        currentTargetRootArray = findRootArrayById(navigationStack[navigationStack.length - 1], targetRootArray);
+    }
+
+    if (currentTargetRootArray == null) {
+        throw new Error('Cannot find current root array from navigation stack.');
+    }
+
+    const target = currentTargetRootArray.find(x => x.id == targetId);
+
+    if (target !== undefined) {
+        console.log('Target to be mark as done:', target);
+    } else {
+        throw new Error('Cannot find element with id ' + targetId + ' at current level.');
+    }
+
+    // check if all its subtasks done
+    let allDone = true;
+    for (let subTarget of target.subTargets) {
+        if (subTarget.isDone === false) {
+            allDone = false;
+            break;
+        }
+    }
+
+    if (!allDone) {
+        return 0;
+    }
+
+    target.isDone = true;
+    target.percent = 100;
+
+    updateParentTargetProgress();
+
+    return 1;
+}
+
+// always happy path, return null indicate that it is root, return target parent if deeper than root 
+function findParentFromNavigationStack() {
+    const traversalStack = [...targetRootArray];
+    while (traversalStack.length > 0) {
+        const current = traversalStack.pop();
+
+        if (current.id == navigationStack[navigationStack.length - 1]) {
+            return current;
+        }
+
+        if (current.subTargets && current.subTargets.length > 0) {
+            traversalStack.push(...current.subTargets);
+        }
+    }
+    return null;
+}
+
+// parent target progress is defined by looking at the top of navigation stack
+function updateParentTargetProgress() {
+    const parentTarget = findParentFromNavigationStack();
+    console.log('parent target', parentTarget);
+    // update global percent because this is currenly root
+    if (parentTarget === null) {
+        let doneCount = 0;
+        for (let target of targetRootArray) {
+            if (target.isDone === true) {
+                doneCount++;
+            }
+        }
+        globalPercent = Math.floor(doneCount / targetRootArray.length) * 100;
+        console.log(globalPercent);
+        return;
+    }
+
+    let count = 0;
+    for (let subTarget of parentTarget.subTargets) {
+        if (subTarget.isDone === true) {
+            count++;
+        }
+    }
+    if (parentTarget.subTargets.length === 0) {
+        parentTarget.percent = 0;
+    } else {
+        parentTarget.percent = Math.floor(count / parentTarget.subTargets.length * 100);
+    }
+
+    const tolerance = 0.0001;
+    if (Math.abs(parentTarget.percent - 100) < tolerance) {
+        // approximately equal
+    } else {
+        parentTarget.isDone = false;
+    }
+}
+
+//generateTestData();
+//doTest();
+
+function generateTestData() {
+    addTarget(0, 'right', createTarget());
+    navigationStack.push(0);
+    addTarget(0, 'right', createTarget());
+    addTarget(0, 'right', createTarget());
+
+    // 0
+    // 1 2
+}
+
+function doTest() {
+    navigationStack.push(0);
+    console.log(markTargetAsDone(1));
+    console.log(markTargetAsDone(2));
+    console.log(findParentFromNavigationStack());
+}
+
+
+
 // Exporting the CRUD methods and necessary variables
 module.exports = {
     addTarget,
@@ -204,5 +353,7 @@ module.exports = {
     getTargetsAtCurrentLevel,
     findPositionInCurrentRootFromId,
     rearrangeTargets,
+    markTargetAsDone,
+    getProgressOfTargetInCurrentRootFromId,
     navigationStack
 };
