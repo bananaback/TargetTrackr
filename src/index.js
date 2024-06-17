@@ -2,7 +2,7 @@ import './styles/styles.css';
 import addTaskImage from './images/add-task.png';
 import markDoneImage from './images/check-circle.png'
 
-const { addTarget, updateTarget, deleteTarget, createTarget, getTargetsAtCurrentLevel, findPositionInCurrentRootFromId, rearrangeTargets, navigationStack } = require('./target-core');
+const { addTarget, updateTarget, deleteTarget, createTarget, getTargetsAtCurrentLevel, findPositionInCurrentRootFromId, rearrangeTargets, markTargetAsDone, getProgressOfTargetInCurrentRootFromId, navigationStack } = require('./target-core');
 
 $(document).ready(function () {
     $('.add-target-btn img').attr('src', addTaskImage);
@@ -101,17 +101,17 @@ function handleSaveUpdateClick(event) {
 
 function handleDoneButtonClick() {
     var $target = $(this).closest('.target');
-    $target.find('.target-overview').addClass('expand');
-    $target.find('.card-header').addClass('expand');
-
     var targetId = $target.attr('id').split('-')[1]; // Extract id from target element
+    if (markTargetAsDone(targetId) === 1) {
+        // success
+        $target.find('.target-overview').addClass('expand');
+        $target.find('.card-header').addClass('expand');
 
-    // Retrieve updated data from the form
-    var updatedTitle = $target.find('.updateTitle').val();
-    var updatedDescription = $target.find('.updateDescription').val();
-
-    // Perform further processing (e.g., send data to server, update UI, etc.)
-    updateTarget(updatedTitle, updatedDescription, true, targetId);
+        // Set the width of .progress div to 100%
+        $target.find('.progress').css('width', '100%');
+    } else {
+        alert("All sub-targets of this target must be done first.");
+    }
 }
 
 function handleUnmarkButtonClick() {
@@ -127,6 +127,9 @@ function handleUnmarkButtonClick() {
 
     // Perform further processing (e.g., send data to server, update UI, etc.)
     updateTarget(updatedTitle, updatedDescription, false, targetId);
+
+    // Set the width of .progress div to 100%
+    $target.find('.progress').css('width', getProgressOfTargetInCurrentRootFromId(targetId) + '%');
 }
 
 function handleDeleteButtonClick() {
@@ -318,10 +321,12 @@ function addNewTarget(direction) {
 }
 
 function createTargetElement(target) {
+    const progressBarWidth = `${target.percent}%`; // Calculate progress bar width
+    const isDoneClass = target.isDone === true ? 'expand' : '';
     return `
         <div class="target" draggable="true" id="target-${target.id}">
-            <div class="card target-overview active">
-                <div class="card-header">
+            <div class="card target-overview ${isDoneClass} active">
+                <div class="card-header ${isDoneClass}">
                     ${target.title}
                     <div class="unmark-wrapper">
                         <div class="unmark-btn" name="unmark-btn">
@@ -333,7 +338,7 @@ function createTargetElement(target) {
                 <div class="card-body">
                     <p>${target.description}</p>
                     <div class="progress-bar" id="progressBar">
-                        <div class="progress" id="progress"></div>
+                        <div class="progress" id="progress" style="width: ${progressBarWidth};"></div>
                     </div>
                 </div>
                 <div class="buttons-container">
@@ -363,6 +368,7 @@ function renderTargets() {
     $('.targets-container .target').remove();
 
     const currentTargets = getTargetsAtCurrentLevel();
+    console.log('current targets: ', currentTargets);
     // Render current targets
     currentTargets.forEach(target => {
         const targetHtml = createTargetElement(target);
