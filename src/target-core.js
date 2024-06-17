@@ -29,6 +29,8 @@ function addTarget(idPosition, direction, targetToAdd) {
     } else {
         throw new Error('Invalid position specified. Use "left" or "right".');
     }
+
+    updateParentTargetProgress();
 }
 
 function getTargetsAtCurrentLevel() {
@@ -149,6 +151,7 @@ function deleteTarget(id) {
     }
 
     currentTargetRootArray.splice(index, 1);
+    updateParentTargetProgress();
 }
 
 // factory to create target object
@@ -297,7 +300,7 @@ function updateParentTargetProgress() {
                 doneCount++;
             }
         }
-        globalPercent = Math.floor(doneCount / targetRootArray.length) * 100;
+        globalPercent = Math.floor(doneCount / targetRootArray.length * 100);
         console.log(globalPercent);
         return;
     }
