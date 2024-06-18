@@ -325,6 +325,32 @@ function updateParentTargetProgress() {
     }
 }
 
+function findTargetFromId(targetId) {
+    const traversalStack = [...targetRootArray];
+    while (traversalStack.length > 0) {
+        const current = traversalStack.pop();
+        if (current.id == targetId) {
+            return current;
+        }
+        if (current.subTargets && current.subTargets.length > 0) {
+            traversalStack.push(...current.subTargets);
+        }
+    }
+    return null;
+}
+
+function getTargetNamesFromNavigationStack() {
+    const result = [];
+    for (let i = 0; i < navigationStack.length; i++) {
+        const root = findTargetFromId(navigationStack[i]);
+        result.push({
+            order: i + 1,
+            title: root.title
+        })
+    }
+    return result;
+}
+
 //generateTestData();
 //doTest();
 
@@ -358,5 +384,6 @@ module.exports = {
     rearrangeTargets,
     markTargetAsDone,
     getProgressOfTargetInCurrentRootFromId,
+    getTargetNamesFromNavigationStack,
     navigationStack
 };
