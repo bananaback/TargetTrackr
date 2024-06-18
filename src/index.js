@@ -2,7 +2,7 @@ import './styles/styles.css';
 import addTaskImage from './images/add-task.png';
 import markDoneImage from './images/check-circle.png'
 
-const { addTarget, updateTarget, deleteTarget, createTarget, getTargetsAtCurrentLevel, findPositionInCurrentRootFromId, rearrangeTargets, markTargetAsDone, getProgressOfTargetInCurrentRootFromId, navigationStack } = require('./target-core');
+const { addTarget, updateTarget, deleteTarget, createTarget, getTargetsAtCurrentLevel, findPositionInCurrentRootFromId, rearrangeTargets, markTargetAsDone, getProgressOfTargetInCurrentRootFromId, getTargetNamesFromNavigationStack, navigationStack } = require('./target-core');
 
 $(document).ready(function () {
     $('.add-target-btn img').attr('src', addTaskImage);
@@ -54,6 +54,16 @@ $(document).ready(function () {
 
     // Handle back navigation
     $('#backButton').off('click').on('click', handleBackButtonClick);
+
+    // Example: Event delegation for click on breadcrumb items
+    $('.breadcrumb-container').off('click', '.breadcrumb-item').on('click', '.breadcrumb-item', function () {
+        const order = $(this).data('order'); // Retrieve data-order attribute value
+        // 0 1 2 3 4 5
+        // length = 6
+        // 
+        navigationStack.splice(order, navigationStack.length - order);
+        renderTargets();
+    });
 
 });
 
@@ -363,7 +373,30 @@ function createTargetElement(target) {
     `;
 }
 
+function renderBreadcrumb() {
+    const targetNamesInOrder = getTargetNamesFromNavigationStack();
+    targetNamesInOrder.unshift({
+        order: 0,
+        title: 'root'
+    });
+
+    const $breadCrumbContainer = $('.breadcrumb-container');
+    $breadCrumbContainer.empty(); // Clear the container before adding new items
+
+    targetNamesInOrder.forEach(function (item) {
+        const $breadcrumbItem = $('<div class="breadcrumb-item"></div>')
+            .text(item.title)
+            .attr('data-order', item.order); // Set data-order attribute
+
+        $breadCrumbContainer.append($breadcrumbItem);
+    });
+}
+
+
+
 function renderTargets() {
+    renderBreadcrumb();
+
     // Clear existing target elements
     $('.targets-container .target').remove();
 
@@ -388,6 +421,8 @@ function renderTargets() {
     } else {
         $('#backButton').show();
     }
+
+    console.log(getTargetNamesFromNavigationStack());
 }
 
 function navigateIntoTarget(targetId) {
@@ -403,3 +438,5 @@ function handleBackButtonClick() {
         renderTargets();
     }
 }
+
+renderBreadcrumb();

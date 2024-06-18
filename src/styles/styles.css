@@ -447,3 +447,38 @@ th {
 .deleting {
     pointer-events: none;
 }
+
+.breadcrumb-container {
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin: 10px;
+}
+
+.breadcrumb-item {
+    background-color: #0082fc;
+    color: white;
+    font-weight: bold;
+    padding: 10px 20px;
+    border-radius: 10px 40px 40px 10px;
+    position: relative;
+}
+
+.breadcrumb-item:hover {
+    background-color: rgb(204, 0, 255);
+}
+
+.breadcrumb-item::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: -5px;
+    /* Adjust based on your design */
+    transform: translateY(-50%);
+    width: 15px;
+    height: 15px;
+    background: #007bff;
+    border-radius: 50%;
+    border: 2px solid white;
+    z-index: 1;
+}
