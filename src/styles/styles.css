@@ -453,6 +453,13 @@ th {
     flex-direction: row;
     gap: 10px;
     margin: 10px;
+    overflow-x: hidden;
+    overflow-y: hidden;
+    height: 45px;
+    cursor: grab;
+    /* Change cursor to indicate grabbing */
+    user-select: none;
+    /* Disable text selection while dragging */
 }
 
 .breadcrumb-item {
@@ -462,6 +469,8 @@ th {
     padding: 10px 20px;
     border-radius: 10px 40px 40px 10px;
     position: relative;
+    height: 45px;
+    white-space: nowrap;
 }
 
 .breadcrumb-item:hover {
