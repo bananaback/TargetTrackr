@@ -55,15 +55,52 @@ $(document).ready(function () {
     // Handle back navigation
     $('#backButton').off('click').on('click', handleBackButtonClick);
 
-    // Example: Event delegation for click on breadcrumb items
-    $('.breadcrumb-container').off('click', '.breadcrumb-item').on('click', '.breadcrumb-item', function () {
-        const order = $(this).data('order'); // Retrieve data-order attribute value
-        // 0 1 2 3 4 5
-        // length = 6
-        // 
-        navigationStack.splice(order, navigationStack.length - order);
-        renderTargets();
-    });
+    let isDragging = false;
+    let startX, scrollLeft;
+    let dragged = false; // Flag to track if dragging has occurred
+
+    // Chain event handlers and method calls
+    $('.breadcrumb-container')
+        .off('mousedown mouseleave mouseup mousemove') // Unbind previous mouse events
+        .on('mousedown', function (e) {
+            isDragging = true;
+            startX = e.pageX - $(this).offset().left;
+            scrollLeft = $(this).scrollLeft();
+            dragged = false; // Reset dragged flag on mousedown
+        })
+        .on('mouseleave', function () {
+            isDragging = false;
+        })
+        .on('mouseup', function (e) {
+            isDragging = false;
+            // Check if dragging occurred before mouseup
+            if (dragged) {
+                e.preventDefault(); // Prevent default click behavior
+            }
+        })
+        .on('mousemove', function (e) {
+            if (isDragging) {
+                const mouseX = e.pageX - $(this).offset().left;
+                const diffX = mouseX - startX;
+                $(this).scrollLeft(scrollLeft - diffX);
+                dragged = true; // Set dragged flag to true during drag
+            }
+        })
+        .off('click', '.breadcrumb-item') // Unbind previous click event
+        .on('click', '.breadcrumb-item', function (e) {
+            if (!dragged) {
+                const order = $(this).data('order');
+                navigationStack.splice(order, navigationStack.length - order);
+                renderTargets();
+            }
+        })
+        .off('wheel') // Unbind previous wheel event
+        .on('wheel', function (e) {
+            // Adjust horizontal scroll position based on mouse wheel delta
+            $(this).scrollLeft($(this).scrollLeft() + e.originalEvent.deltaY);
+            // Prevent default scrolling behavior
+            e.preventDefault();
+        });
 
 });
 
